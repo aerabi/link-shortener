@@ -51,3 +51,29 @@ src
         └── wsgi.py
 
 ```
+
+Now, let's create the Django app for shortening the URLs:
+
+```bash
+cd src/urlshortener
+python manage.py startapp main
+```
+
+It will create directory under `src/urlshortener`:
+
+```
+src
+└── urlshortener
+    ├── main
+    │   ├── admin.py
+    │   ├── apps.py
+    │   ├── __init__.py
+    │   ├── migrations
+    │   ├── models.py
+    │   ├── tests.py
+    │   └── views.py
+    ├── manage.py
+    └── urlshortener
+```
+
+## Create the Form
