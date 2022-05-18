@@ -35,3 +35,19 @@ Create a Django project there:
 ```bash
 django-admin startproject urlshortener
 ```
+
+By creating the Django project, the tree structure of the repo
+would look like this:
+
+```
+src
+└── urlshortener
+    ├── manage.py
+    └── urlshortener
+        ├── asgi.py
+        ├── __init__.py
+        ├── settings.py
+        ├── urls.py
+        └── wsgi.py
+
+```
