@@ -76,4 +76,71 @@ src
     └── urlshortener
 ```
 
-## Create the Form
+## Create the URL shortener
+
+Install the package `urlshorteners`:
+
+```bash
+pip install pyshorteners
+```
+
+Dump the pip freeze for the next generations:
+
+```bash
+pip freeze > requirements.txt
+```
+
+Head to `main/views.py` and edit it accordingly:
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+import pyshorteners
+
+
+# Create your views here.
+def shorten(request, url):
+    shortener = pyshorteners.Shortener()
+    shortened_url = shortener.chilpit.short(url)
+    return HttpResponse(f'Shortened URL: <a href="{shortened_url}">{shortened_url}</a>')
+
+```
+
+Now, we should assign a URL to this function. Create a `urls.py` under `main`:
+
+```bash
+touch main/urls.py
+```
+
+And fill it up:
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('shorten/<str:url>', views.shorten, name='shorten'),
+]
+```
+
+Now head back to the `urlshortener/urls.py` and include the newly created `urls.py` file:
+
+```python
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path('', include('main.urls')),
+    path('admin/', admin.site.urls),
+]
+```
+
+Now, run the development server:
+
+```bash
+python manage.py runserver
+```
+
+And open [`127.0.0.1:8000/shorten/aerabi.com`](http://127.0.0.1:8000/shorten/aerabi.com)
+in your browser.
