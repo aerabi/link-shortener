@@ -144,3 +144,88 @@ python manage.py runserver
 
 And open [`127.0.0.1:8000/shorten/aerabi.com`](http://127.0.0.1:8000/shorten/aerabi.com)
 in your browser.
+
+## Create the Form
+
+Now let's create the landing page. Create a new HTML file:
+
+```bash
+mkdir -p main/templates/main
+touch main/templates/main/index.html
+```
+
+Open the `index.html` and fill it up the with following content:
+
+```html
+<form action="{% url 'main:shorten' url %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <input type="text" name="url">
+</fieldset>
+<input type="submit" value="Shorten">
+</form>
+```
+
+Now head to `main/views.py` and create two functions, namely `index` and `shorten_post`:
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+import pyshorteners
+
+
+def index(request):
+    return render(request, 'main/index.html')
+
+
+def shorten_post(request):
+    return shorten(request, request.POST['url'])
+
+
+. . .
+```
+
+Then to the `main/urls.py` to bind the function to URLs:
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('shorten', views.shorten_post, name='shorten_post'),
+    path('shorten/<str:url>', views.shorten, name='shorten'),
+]
+```
+
+The main difference between `shorten` and `shorten_post` is that the latter accepts
+HTTP POST parameters instead of URL path parameters.
+
+Now head to `urlshortener/settings.py` and add `'main'` to the end of the list `INSTALLED_APPS`:
+
+```python
+. . .
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'main',
+]
+
+. . .
+```
+
+Now restart the development server:
+
+```bash
+python manage.py runserver
+```
+
+This time go to the root: [`127.0.0.1:8000`](http://127.0.0.1:8000/)
+
+Bingo!

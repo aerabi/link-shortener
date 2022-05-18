@@ -3,7 +3,14 @@ from django.http import HttpResponse
 import pyshorteners
 
 
-# Create your views here.
+def index(request):
+    return render(request, 'main/index.html')
+
+
+def shorten_post(request):
+    return shorten(request, request.POST['url'])
+
+
 def shorten(request, url):
     shortener = pyshorteners.Shortener()
     shortened_url = shortener.chilpit.short(url)
