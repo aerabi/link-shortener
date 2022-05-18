@@ -9,6 +9,12 @@ virtualenv -p python3.8 venv
 source venv/bin/activate
 ```
 
+Install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Create the Project from the Scratch
 
 Create virtualenv and activate it:
@@ -76,7 +82,7 @@ src
     └── urlshortener
 ```
 
-## Create the URL shortener
+### Create the URL Shortener
 
 Install the package `urlshorteners`:
 
@@ -145,7 +151,7 @@ python manage.py runserver
 And open [`127.0.0.1:8000/shorten/aerabi.com`](http://127.0.0.1:8000/shorten/aerabi.com)
 in your browser.
 
-## Create the Form
+### Create the Form
 
 Now let's create the landing page. Create a new HTML file:
 
