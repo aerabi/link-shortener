@@ -1,5 +1,13 @@
 # Link Shortener Django
 
+## Table of Contents
+
+* [Installation](#installation)
+* [Create the Project from the Scratch](#create-the-project-from-the-scratch)
+  + [Create the URL Shortener](#create-the-url-shortener)
+  + [Create the Form](#create-the-form)
+  + [Add Docker Compose](#add-docker-compose)
+
 ## Installation
 
 Create virtualenv and activate it:
