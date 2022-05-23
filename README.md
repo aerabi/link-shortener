@@ -216,19 +216,19 @@ urlpatterns = [
 The main difference between `shorten` and `shorten_post` is that the latter accepts
 HTTP POST parameters instead of URL path parameters.
 
-Now head to `urlshortener/settings.py` and add `'main'` to the end of the list `INSTALLED_APPS`:
+Now head to `urlshortener/settings.py` and add `'main.apps.MainConfig'` to the beginning of the list `INSTALLED_APPS`:
 
 ```python
 . . .
 
 INSTALLED_APPS = [
+    'main.apps.MainConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',
 ]
 
 . . .
@@ -274,3 +274,104 @@ docker-compose up -d
 ```
 
 The server should run on port 8000 now: [`127.0.0.1:8000`](http://127.0.0.1:8000/)
+
+### Create Database Models
+
+Now, to save the URLs and their short versions locally, we should create database models for them.
+Head to `main/models.py` and created the following model:
+
+```python
+from django.db import models
+
+
+# Create your models here.
+class Question(models.Model):
+    original_url = models.CharField(max_length=256)
+    hash = models.CharField(max_length=10)
+    creation_date = models.DateTimeField('creation date')
+
+```
+
+We'll assume that the given URLs fit in 256 characters and the short version are less than 10 characters
+(usually 7 characters would suffice).
+
+Now, create the database migrations:
+
+```
+python manage.py makemigrations
+```
+
+A new file will be created under `main/migrations`. Commit this file.
+
+Now to apply the database migrations to the default SQLite DB, run:
+
+```bash
+python manage.py migrate
+```
+
+Now that we have the database models, we would want to create a shortener service.
+Create a Python file `main/service.py` and add the following functionality:
+
+```python
+import random
+import string
+from django.utils import timezone
+
+from .models import LinkMapping
+
+
+def shorten(url):
+    random_hash = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(7))
+    mapping = LinkMapping(original_url=url, hash=random_hash, creation_date=timezone.now())
+    mapping.save()
+    return random_hash
+
+
+def load_url(url_hash):
+    return LinkMapping.objects.get(hash=url_hash)
+
+```
+
+Now, create a new function in the views for redirecting:
+
+```python
+from django.shortcuts import render, redirect
+
+from . import service
+
+. . .
+
+def redirect_hash(request, url_hash):
+    original_url = service.load_url(url_hash).original_url
+    return redirect(original_url)
+```
+
+Create a URL mapping for the redirect function:
+
+```python
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('shorten', views.shorten_post, name='shorten_post'),
+    path('shorten/<str:url>', views.shorten, name='shorten'),
+    path('<str:url_hash>', views.redirect_hash, name='redirect'),
+]
+```
+
+And finally change the shorten view function to use the internal service:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.urls import reverse
+
+from . import service
+
+. . .
+
+def shorten(request, url):
+    shortened_url_hash = service.shorten(url)
+    shortened_url = reverse('redirect', args=[shortened_url_hash])
+    return HttpResponse(f'Shortened URL: <a href="{shortened_url}">{shortened_url}</a>')
+```
+
+We can also remove the third-party shortener library from `requirements.txt`, as we don't use it anymore.
