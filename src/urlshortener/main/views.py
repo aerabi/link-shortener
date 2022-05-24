@@ -20,5 +20,5 @@ def shorten_post(request):
 
 def shorten(request, url):
     shortened_url_hash = service.shorten(url)
-    shortened_url = reverse('redirect', args=[shortened_url_hash])
+    shortened_url = request.build_absolute_uri(reverse('redirect', args=[shortened_url_hash]))
     return HttpResponse(f'Shortened URL: <a href="{shortened_url}">{shortened_url}</a>')
