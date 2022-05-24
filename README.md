@@ -445,3 +445,88 @@ docker-compose exec web python manage.py migrate
 ```
 
 The web server is not ready. Go ahead and try it: [`127.0.0.1:8000`](http://127.0.0.1:8000/)
+
+### Make it Pretty
+
+Create a `base.html` under `main/templates/main`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Link Shortener</title>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+</head>
+<style>
+  #main-card {
+      margin:0 auto;
+      display: flex;
+      width: 50em;
+      align-items: center;
+  }
+</style>
+<body class="mdc-typography">
+<div id="main-card" class="mdc-card">
+  {% block content %}
+  {% endblock %}
+</div>
+</body>
+```
+
+Alter the `index.html` to use material design:
+
+```html
+{% extends 'main/base.html' %}
+
+{% block content %}
+<form action="{% url 'shorten_post' %}" method="post">
+  {% csrf_token %}
+  <label class="mdc-text-field mdc-text-field--outlined">
+      <span class="mdc-notched-outline">
+        <span class="mdc-notched-outline__leading"></span>
+        <span class="mdc-notched-outline__notch">
+          <span class="mdc-floating-label" id="my-label-id">URL</span>
+        </span>
+        <span class="mdc-notched-outline__trailing"></span>
+      </span>
+    <input type="text" name="url" class="mdc-text-field__input" aria-labelledby="my-label-id">
+  </label>
+  <button class="mdc-button mdc-button--outlined" type="submit">
+    <span class="mdc-button__ripple"></span>
+    <span class="mdc-button__label">Shorten</span>
+  </button>
+</form>
+{% endblock %}
+```
+
+Create another view for the response, namely `link.html`:
+
+```html
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="mdc-card__content">
+  <p>Shortened URL: <a href="{{shortened_url}}">{{shortened_url}}</a></p>
+</div>
+{% endblock %}
+```
+
+Now, get back to `views.py` and change the `shorten` function to render instead of
+returning a plain HTML:
+
+```python
+. . .
+
+def shorten(request, url):
+    shortened_url_hash = service.shorten(url)
+    shortened_url = request.build_absolute_uri(reverse('redirect', args=[shortened_url_hash]))
+    return render(request, 'main/link.html', {'shortened_url': shortened_url})
+```
+
+To apply the changes, do:
+
+```bash
+docker-compose up --build -d
+```

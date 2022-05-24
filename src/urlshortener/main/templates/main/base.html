@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Link Shortener</title>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+</head>
+<style>
+  #main-card {
+      margin:0 auto;
+      display: flex;
+      width: 50em;
+      align-items: center;
+  }
+</style>
+<body class="mdc-typography">
+<div id="main-card" class="mdc-card">
+  {% block content %}
+  {% endblock %}
+</div>
+</body>
