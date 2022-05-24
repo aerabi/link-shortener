@@ -435,7 +435,7 @@ services:
 Now start the Docker Compose services:
 
 ```bash
-docker-compose up -d
+docker-compose up --build -d
 ```
 
 Now, to do the migrations, do:
