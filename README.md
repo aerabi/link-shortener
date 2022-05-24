@@ -375,3 +375,73 @@ def shorten(request, url):
 ```
 
 We can also remove the third-party shortener library from `requirements.txt`, as we don't use it anymore.
+
+### Use PostgreSQL
+
+To use PostgreSQL instead of SQLite, we'll change the config in `settings.py`:
+
+```python
+import os
+
+. . .
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+if os.environ.get('POSTGRES_NAME'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_NAME'),
+            'USER': os.environ.get('POSTGRES_USER'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+            'HOST': 'db',
+            'PORT': 5432,
+        }
+    }
+```
+
+Now head to `docker-compose.yml` and change it to the following:
+
+```yaml
+version: '3.2'
+
+services:
+  web:
+    build: ./src/urlshortener/
+    command: gunicorn urlshortener.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+```
+
+Now start the Docker Compose services:
+
+```bash
+docker-compose up -d
+```
+
+Now, to do the migrations, do:
+
+```bash
+docker-compose exec web python manage.py migrate
+```
+
+The web server is not ready. Go ahead and try it: [`127.0.0.1:8000`](http://127.0.0.1:8000/)
