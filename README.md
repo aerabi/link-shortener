@@ -468,7 +468,7 @@ Create a `base.html` under `main/templates/main`:
   }
 </style>
 <body class="mdc-typography">
-<div id="main-card" class="mdc-card">
+<div id="main-card">
   {% block content %}
   {% endblock %}
 </div>
