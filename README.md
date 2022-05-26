@@ -2,8 +2,9 @@
 
 ## Table of Contents
 
-* [Installation](#installation)
-* [Create the Project from the Scratch](#create-the-project-from-the-scratch)
+* [Getting Started](#getting-started)
+  + [Using Docker](#using-docker)
+  + [Build from Scratch](#build-from-scratch)
   + [Create the URL Shortener](#create-the-url-shortener)
   + [Create the Form](#create-the-form)
   + [Add Docker Compose](#add-docker-compose)
@@ -50,7 +51,7 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-## Create the Project from the Scratch
+## Build from Scratch
 
 Create virtualenv and activate it:
 
