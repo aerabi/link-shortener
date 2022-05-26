@@ -2,13 +2,41 @@
 
 ## Table of Contents
 
-* [Installation](#installation)
-* [Create the Project from the Scratch](#create-the-project-from-the-scratch)
+* [Getting Started](#getting-started)
+  + [Using Docker](#using-docker)
+  + [Build from Scratch](#build-from-scratch)
   + [Create the URL Shortener](#create-the-url-shortener)
   + [Create the Form](#create-the-form)
   + [Add Docker Compose](#add-docker-compose)
 
-## Installation
+## Getting Started
+
+### Using Docker
+
+- Clone the repo
+
+```
+git clone https://github.com/aerabi/link-shortener
+```
+
+- Bring up the app
+
+```
+docker-compose up -d --build
+```
+
+- Perform the migration
+
+```
+docker-compose exec web python manage.py migrate
+```
+<img width="808" alt="Screen Shot 2022-05-26 at 11 55 14 AM" src="https://user-images.githubusercontent.com/313480/170429992-84e82d93-442a-4384-9492-03d98aed64c1.png">
+
+<img width="852" alt="Screen Shot 2022-05-26 at 11 55 36 AM" src="https://user-images.githubusercontent.com/313480/170430056-4f0955c8-2110-486f-873b-0c2afa12ddd5.png">
+
+
+## Manual Method
+
 
 Create virtualenv and activate it:
 
@@ -23,7 +51,7 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-## Create the Project from the Scratch
+## Build from Scratch
 
 Create virtualenv and activate it:
 
@@ -256,15 +284,16 @@ psycopg2-binary==2.9.3
 Now, create the following `docker-compose.yml` file in the root of the repo:
 
 ```yml
-version: '3.2'
-
 services:
   web:
-    build: ./src/urlshortener/
+    build:
+      context: ./src/urlshortener/
+      dockerfile: Dockerfile
     command: gunicorn urlshortener.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000:8000
-```
+
+ ```
 
 Now, start the app using Docker Compose:
 

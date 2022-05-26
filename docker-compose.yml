@@ -1,6 +1,8 @@
 services:
   web:
-    build: ./src/urlshortener/
+    build:
+      context: ./src/urlshortener/
+      dockerfile: Dockerfile
     command: gunicorn urlshortener.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000:8000
