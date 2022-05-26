@@ -8,7 +8,34 @@
   + [Create the Form](#create-the-form)
   + [Add Docker Compose](#add-docker-compose)
 
-## Installation
+## Getting Started
+
+### Using Docker
+
+- Clone the repo
+
+```
+git clone https://github.com/aerabi/link-shortener
+```
+
+- Bring up the app
+
+```
+docker-compose up -d --build
+```
+
+- Perform the migration
+
+```
+docker-compose exec web python manage.py migrate
+```
+<img width="808" alt="Screen Shot 2022-05-26 at 11 55 14 AM" src="https://user-images.githubusercontent.com/313480/170429992-84e82d93-442a-4384-9492-03d98aed64c1.png">
+
+<img width="852" alt="Screen Shot 2022-05-26 at 11 55 36 AM" src="https://user-images.githubusercontent.com/313480/170430056-4f0955c8-2110-486f-873b-0c2afa12ddd5.png">
+
+
+## Manual Method
+
 
 Create virtualenv and activate it:
 
