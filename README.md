@@ -284,15 +284,16 @@ psycopg2-binary==2.9.3
 Now, create the following `docker-compose.yml` file in the root of the repo:
 
 ```yml
-version: '3.2'
-
 services:
   web:
-    build: ./src/urlshortener/
+    build:
+      context: ./src/urlshortener/
+      dockerfile: Dockerfile
     command: gunicorn urlshortener.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000:8000
-```
+
+ ```
 
 Now, start the app using Docker Compose:
 
