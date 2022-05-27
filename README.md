@@ -4,10 +4,14 @@
 
 * [Getting Started](#getting-started)
   + [Using Docker](#using-docker)
-  + [Build from Scratch](#build-from-scratch)
+* [Manual Method](#manual-method)
+* [Build from Scratch](#build-from-scratch)
   + [Create the URL Shortener](#create-the-url-shortener)
   + [Create the Form](#create-the-form)
   + [Add Docker Compose](#add-docker-compose)
+  + [Create Database Models](#create-database-models)
+  + [Use PostgreSQL](#use-postgresql)
+  + [Make it Pretty](#make-it-pretty)
 
 ## Getting Started
 
